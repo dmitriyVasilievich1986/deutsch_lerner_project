@@ -1,0 +1,41 @@
+version: "3.7"
+
+services:
+    front:
+        image: dmitriyvasil1986/deutsch_front:latest
+        restart: "no"
+        volumes:
+            - ./static/js:/app/static/js
+
+    db:
+        image: mysql:latest
+        restart: "always"
+        environment:
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_DATABASE: ${DB_NAME}
+            MYSQL_USER: ${DB_USER}
+        volumes:
+            - ./mysql:/var/lib/mysql
+
+    back:
+        image: dmitriyvasil1986/deutsch_back
+        restart: "always"
+        environment:
+            DB_PASSWORD: ${DB_PASSWORD}
+            DB_USER: ${DB_USER}
+            DB_NAME: ${DB_NAME}
+            DB_HOST: ${DB_HOST}
+            DEBUG: ${DEBUG}
+        depends_on:
+            - db
+        volumes:
+            - ./static:/app/static
+
+    nginx:
+        image: nginx:latest
+        restart: "always"
+        ports:
+            - 80:80
+        volumes:
+            - ./static:/static
+            - ./nginx/nginx.conf:/etc/nginx/nginx.conf

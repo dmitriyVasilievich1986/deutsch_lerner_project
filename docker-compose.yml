@@ -40,3 +40,5 @@ services:
         volumes:
             - ./static:/static
             - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+        depends_on:
+            - back
